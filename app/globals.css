@@ -1,26 +1,158 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Inter:wght@100..900&display=swap');
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #050505;
+  --foreground: #00ff41; /* Classic Matrix Green */
+  --terminal-bg: #0a0a0a;
+  --terminal-border: #1a1a1a;
+  --terminal-accent: #00ff41;
+  --terminal-accent-muted: rgba(0, 255, 65, 0.2);
+  --terminal-error: #ff3e3e;
+  --terminal-warning: #ffcc00;
+  --terminal-info: #00d4ff;
+  
+  --font-mono: 'Geist Mono', monospace;
+  --font-sans: 'Inter', sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-mono: var(--font-mono);
+  --font-sans: var(--font-sans);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum";
+}
+
+/* CRT Scanline Effect */
+body::after {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.1) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  z-index: 9999;
+  background-size: 100% 3px, 3px 100%;
+  pointer-events: none;
+}
+
+/* Terminal Box */
+.terminal-box {
+  background: var(--terminal-bg);
+  border: 1px solid var(--terminal-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.terminal-box::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--terminal-accent);
+  opacity: 0.3;
+}
+
+.terminal-header {
+  border-bottom: 1px solid var(--terminal-border);
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 255, 65, 0.05);
+}
+
+.terminal-content {
+  padding: 1rem;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1a1a1a;
+  border: 1px solid #333;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #222;
+}
+
+/* Animations */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+  display: inline-block;
+  width: 8px;
+  height: 1.2em;
+  background: var(--terminal-accent);
+  vertical-align: middle;
+  margin-left: 2px;
+}
+
+/* Chart Customization */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: #1a1a1a;
+}
+
+.recharts-cartesian-axis-line {
+  stroke: #333;
+}
+
+.recharts-cartesian-axis-tick-line {
+  stroke: #333;
+}
+
+.recharts-text {
+  fill: #666 !important;
+  font-family: var(--font-mono) !important;
+  font-size: 10px !important;
+}
+
+/* Glassmorphism overrides for Terminal feel */
+.glass-card {
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(4px);
+  border: 1px solid #1a1a1a;
+  border-radius: 0; /* Sharp corners for terminal look */
+}
+
+.glass-card-hover:hover {
+  border-color: var(--terminal-accent);
+  background: rgba(0, 255, 65, 0.02);
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
 }
